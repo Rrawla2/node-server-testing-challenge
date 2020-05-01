@@ -3,27 +3,24 @@ const request = require("supertest")
 const server = require("./server.js")
 
 describe("server.js", () => {
-    describe("index route", () => {
-        it("should return an OK status code from the index route", async () => {
-            const expectedStatusCode = 200
+    it("should set up the testing", () => {
+        expect(process.env.DB_ENV).toBe("testing")
+    })
 
-            const response = await request("server").get("/")
-
-            expect(response.status).toEqual(expectedStatusCode)
+    describe("GET /", () => {
+        it("should return status 200: success", async () => {
+            const res = await request(server).get("/")
+            expect(res.status).toBe(200)
         })
 
-        it("should return a JSON object from the index route", async () => {
-            const expectedBody = { api: "running" }
-
-            const response = await request("server").get("/")
-
-            expect(response.body).toEqual(expectedBody)
+        it("should return JSON type", async () => {
+            const res = await request(server).get("/")
+            expect(res.type).toBe("application/json")
         })
 
-        it("should return a JSON object from the index route", async () => {
-            const response = await request("server").get("/")
-
-            expect(response.type).toEqual("application/json")
+        it("should return a JSON object {api: 'running'}", async () => {
+            const res = await request(server).get("/")
+            expect(res.body).toEqual({ api: "running" })
         })
     })
 })
